@@ -37,7 +37,7 @@ ISR(USART_RX_vect){
 // **************************
 ISR(TIMER1_COMPA_vect) {
 
-	// sync-signaali
+	// sync signal
 	PORTB &= ~(1 << _KBDATA);
 	syncstate = SYNC;
 }
@@ -45,7 +45,8 @@ ISR(TIMER1_COMPA_vect) {
 // **************************
 ISR(PCINT_vect) {
 
-	leds = PINB & 0x03;	// PB0 ja PB1
+	// leds: PB0 and PB1
+	leds = PINB & 0x03;
 }
 
 // **************************
@@ -57,7 +58,7 @@ int main() {
 
 	while (1) {
 
-		// lopeta sync, kun > 1us
+		// stop sync when > 1us
 		if ((syncstate == SYNC) && (TCNT1 > 0)) {
 			PORTB |= (1 << _KBDATA);
 			syncstate = IDLE;
@@ -73,7 +74,7 @@ int main() {
 			uartstate = IDLE;
 		}
 
-		leds = PINB >> 6; 		     // Check led pin state
+		// check led pins state
 		if (leds != ledstate) {
 			while (!(UCSRA & (1 << UDRE)));
 			UDR = leds;
@@ -102,7 +103,7 @@ void init_board() {
 	DDRB  |= (1 << _KBCLOCK) | (1 << _KBDATA) | (1 << _KBRESET);
 	PORTB |= (1 << _KBCLOCK) | (1 << _KBDATA) | (1 << _KBRESET);
 
-	// Serial commm
+	// Serial comm
 	UBRRH = 0;
 	UBRRL = 103; // 16Mhz, 9600bps
 	UCSRB = (1 << RXCIE) | (1 << RXEN) | (1 << TXEN);

@@ -5,7 +5,7 @@ See [demo video](https://youtu.be/kAuzQ2jPxQk).
 
 Receiver PCB attached to Amiga 500 keyboard connector, using Xbee and HC-12 wireless radios.
 
-![Receiver](https://github.com/t33bu/wireless-amiga-keyboard/blob/master/receiver/receiver_xbee.jpg)
+![Receiver](https://github.com/t33bu/wireless-amiga-keyboard/blob/master/receiver/receiver_xbee.png)
 ![Receiver](https://github.com/t33bu/wireless-amiga-keyboard/blob/master/receiver/receiver_xbee_2.jpg)
 
 ![Receiver](https://github.com/t33bu/wireless-amiga-keyboard/blob/master/receiver/receiver_hc12.jpg)

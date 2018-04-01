@@ -7,6 +7,7 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
+// **************************
 #define	_KBCLOCK			PB7
 #define	_KBDATA				PB6
 #define	_KBRESET			PB5
@@ -16,28 +17,29 @@
 #define AMIGA_INITPOWER		0xFD
 #define AMIGA_TERMPOWER		0xFE
 
+// **************************
+void init_board(void);
 void kb_startup(void);
 void kb_send(uint8_t code);
 void kb_reset(void);
 
 enum PROGRAM_STATE { IDLE, SYNC, RECEIVED };
-volatile uint8_t mode=IDLE, uartdata=0, uartstate=IDLE, ledstate=0;
-uint8_t leds=0;
+volatile uint8_t syncstate=IDLE, uartstate=IDLE, uartdata=0, leds=0;
+uint8_t ledstate=0;
 
+// **************************
 ISR(USART_RX_vect){
 
 	uartdata = UDR;
-	mode = RECEIVED;
+	uartstate = RECEIVED;
 }
 
+// **************************
 ISR(TIMER1_COMPA_vect) {
 
-	if (mode == IDLE) {
-
-		// sync-signaali
-		PORTB &= ~(1 << _KBDATA);
-		mode = SYNC;
-	}
+	// sync-signaali
+	PORTB &= ~(1 << _KBDATA);
+	syncstate = SYNC;
 }
 
 // **************************
@@ -48,6 +50,42 @@ ISR(PCINT_vect) {
 
 // **************************
 int main() {
+
+	init_board();
+
+	kb_startup();
+
+	while (1) {
+
+		// lopeta sync, kun > 1us
+		if ((syncstate == SYNC) && (TCNT1 > 0)) {
+			PORTB |= (1 << _KBDATA);
+			syncstate = IDLE;
+		}
+
+		if ((uartstate == RECEIVED) && (uartdata > 0)) {
+			if (uartdata == (AMIGA_RESET << 1)) {
+				kb_reset();
+			} else  {
+				kb_send(uartdata);
+			}
+			uartdata = 0;
+			uartstate = IDLE;
+		}
+
+		leds = PINB >> 6; 		     // Check led pin state
+		if (leds != ledstate) {
+			while (!(UCSRA & (1 << UDRE)));
+			UDR = leds;
+			ledstate = leds;
+		}
+	}
+
+	return 0;
+}
+
+// **************************
+void init_board() {
 
 	cli();
 
@@ -78,36 +116,6 @@ int main() {
 	TCCR1B |= (1<<CS12) | (1<<CS10);
 
 	sei();
-
-	kb_startup();
-
-	while (1) {
-
-		// lopeta sync, kun > 1us
-		if ((mode == SYNC) && (TCNT1 > 0)) {
-			PORTB |= (1 << _KBDATA);
-			mode = IDLE;
-		}
-
-		if (uartdata > 0) {
-			if (uartdata == (AMIGA_RESET << 1)) {
-				kb_reset();
-			} else  {
-				kb_send(uartdata);
-			}
-			uartdata = 0;
-			uartstate = IDLE;
-		}
-
-		leds = PINB >> 6; 		     // Check led pin state
-		if (leds != ledstate) {
-			while (!(UCSRA & (1 << UDRE)));
-			UDR = leds;
-			ledstate = leds;
-		}
-	}
-
-	return 0;
 }
 
 // **************************
@@ -146,7 +154,6 @@ void kb_send(uint8_t code) {
 // **************************
 void kb_reset(void) {
 
-	_delay_ms(500); 	// wait for reset warning
 	PORTB &= ~(1 << _KBRESET); 	// reset
 	_delay_ms(500); 	// minimum 250ms
 	PORTB |= (1 << _KBRESET);

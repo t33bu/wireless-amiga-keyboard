@@ -3,7 +3,7 @@ Design documentation and code repository for my wireless Amiga keyboard adapter 
 
 See [demo video](https://youtu.be/kAuzQ2jPxQk). 
 
-Receiver PCB attached to Amiga 500 keyboard connector, using Xbee and HC-12 wireless radios.
+Receiver PCB attached to Amiga 500 keyboard connector, using [XBee](https://www.digi.com/xbee) or [HC-12](https://github.com/robert-rozee/HC-12-user-manual---reformatted) wireless radios.
 
 ![Receiver](https://github.com/t33bu/wireless-amiga-keyboard/blob/master/receiver/receiver_xbee.png)
 ![Receiver](https://github.com/t33bu/wireless-amiga-keyboard/blob/master/receiver/receiver_xbee_2.jpg)
@@ -11,7 +11,7 @@ Receiver PCB attached to Amiga 500 keyboard connector, using Xbee and HC-12 wire
 ![Receiver](https://github.com/t33bu/wireless-amiga-keyboard/blob/master/receiver/receiver_hc12.jpg)
 ![Receiver](https://github.com/t33bu/wireless-amiga-keyboard/blob/master/receiver/receiver_hc12_2.jpg)
 
-Transmitter with a PS/2 keyboard.
+Transmitter device for PS/2 keyboards.
 
 ![Transmitter](https://github.com/t33bu/wireless-amiga-keyboard/blob/master/transmitter/transmitter_ps2.png)
 

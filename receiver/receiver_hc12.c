@@ -68,8 +68,8 @@ int main() {
 			uartstate = IDLE;
 		}
 
-		// check led pins state
-		leds = PINB >> 6;
+		// check led pins state: PB1 and PB0
+		leds = PINB & 0x3;
 		if (leds != ledstate) {
 			while (!(UCSRA & (1 << UDRE)));
 			UDR = leds;

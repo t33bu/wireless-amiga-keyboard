@@ -43,13 +43,6 @@ ISR(TIMER1_COMPA_vect) {
 }
 
 // **************************
-ISR(PCINT_vect) {
-
-	// leds: PB0 and PB1
-	leds = PINB & 0x03;
-}
-
-// **************************
 int main() {
 
 	init_board();
@@ -58,12 +51,13 @@ int main() {
 
 	while (1) {
 
-		// stop sync when > 1us
+		// stop sync, when > 1us passed
 		if ((syncstate == SYNC) && (TCNT1 > 0)) {
 			PORTB |= (1 << _KBDATA);
 			syncstate = IDLE;
 		}
 
+		// scancode received
 		if ((uartstate == RECEIVED) && (uartdata > 0)) {
 			if (uartdata == (AMIGA_RESET << 1)) {
 				kb_reset();
@@ -75,6 +69,7 @@ int main() {
 		}
 
 		// check led pins state
+		leds = PINB >> 6;
 		if (leds != ledstate) {
 			while (!(UCSRA & (1 << UDRE)));
 			UDR = leds;
@@ -95,9 +90,6 @@ void init_board() {
 	DDRB &= ~(1 << _KBINUSE);
 	PORTB &= ~(1 << _KBSTATUS);
 	PORTB &= ~(1 << _KBINUSE);
-	// Change in led pins raises interrupts
-	PCMSK |= (1 << PCINT1) | (1 << PCINT0);
-	GIMSK |= (1 << PCIE);
 
 	// MCU controls data and clock pins
 	DDRB  |= (1 << _KBCLOCK) | (1 << _KBDATA) | (1 << _KBRESET);

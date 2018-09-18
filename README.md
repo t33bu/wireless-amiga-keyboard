@@ -1,7 +1,7 @@
 # wireless-amiga-keyboard
 Design documentation and code repository for my wireless Amiga keyboard adapter designs. 
 
-The details of the project will be first described in the [Skrolli](https://www.skrolli.fi/en/) magazine (forthcoming issue 2 / 2018) and later in this repository.
+The details of the project will be first described in the [Skrolli](https://www.skrolli.fi/en/) magazine (forthcoming issue 3 / 2018) and later in this repository.
 
 See the [demo video](https://youtu.be/kAuzQ2jPxQk). 
 
